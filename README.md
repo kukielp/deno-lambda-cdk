@@ -1,26 +1,27 @@
 ## Requirements:
-- CDK
+- AWS CDK
 ```npm install -g aws-cdk```
-- nodeJs - [Download](https://nodejs.org/en/download/)
+- nodeJs - [Download Link](https://nodejs.org/en/download/)
 - An AWS account
 - Local credenitals ( unless using Cloud 9 )
-- A Dino layer deployed
-- jq [Download](https://stedolan.github.io/jq/)
+- jq [Download Link](https://stedolan.github.io/jq/) ( not required bus very useful )
 
 # Overview
 
 This is an example project showing:
 - AWS CDK
 - TypeScript
-- Deploying a new layer in a CDK project
+- Deploying a new layer in a CDK project and deploy a fuctin that will sue the layer.
 
+# Intro
 I have been followign Deno for a little while, it's nice to use stong typing in javascript however the transpilers are a slight overhead, Deno does away with this and allows the use of TypeScript with out compilation.
 
-The CDK stack project is still usign typescript that is compiled however you can see in ```tsconfig.json``` that /srcprogram is excluded meanign we dont need to compile this.
+The CDK stack project is still usign typescript that is compiled however you can see in ```tsconfig.json``` that /src/program is excluded meaning we dont need to compile test files.
 
+# Stack
 The stack consist of:
 - Lambda layer the enables Deno runtime
-- A lambda function
+- A Lambda function
 - An API gateway
 
 To start off clone the repo cand cd into the folder then run:
@@ -29,11 +30,12 @@ npm install
 npm run watch
 
 ```
-This will start monitoring the CDK stack TypCcript files and compile them to vanilla javascript.  Keep an eye on the terminal as it will complile the stack code as you make changes and save.
+This will start monitoring the CDK stack TypScript files and compile them to vanilla javascript.  Keep an eye on the terminal as it will complile the stack code as you make changes and save and you'll be able to spot mistakes pre runtime.
 
-How do we define a layer in CDK?  I decide not to build the runetime in this example but show how to deploy a built runtime.  I took the latest release from: 
+# Layers in CDK
+How do we define a layer in CDK?  I decide not to build the runtime in this example but show how to deploy a built runtime.  I took the latest release from: 
 [https://github.com/hayd/deno-lambda/releases](https://github.com/hayd/deno-lambda/releases
-) and unzipped the contents into src/layer folder.  In CDK we define a new layer:
+) and unzipped the contents into src/layer folder.  These file are what is require to run Demo.  In CDK we define a new layer:
 
 ```
 const layer = new lambda.LayerVersion(this, 'deno-layer', {
@@ -45,7 +47,7 @@ const layer = new lambda.LayerVersion(this, 'deno-layer', {
 ```
 # Lambda function:
 We can see that AWS provide the 'lambda.Runtime.PROVIDED' value for use when we are leveraging a custom runtime.
-The code will come from src/program folder, in this case a single file called "name.ts" this file directly is deployed as a typescript file.  When we create the function we pass in the layer defined above ( that value will be the ARB opf the layer ).  The handler is the name of the file ( eg name )
+The code will come from src/program folder, in this case a single file called "name.ts" this file directly is deployed as a typescript file.  When we create the function we pass in the layer defined above ( that value will be the ARN of the layer ).  The handler is the name of the file ( eg name )
 
 ```
 const name = new lambda.Function(this, 'NameHandler', {
@@ -54,6 +56,13 @@ const name = new lambda.Function(this, 'NameHandler', {
       handler: 'name.handler',
       layers: layer,
     })
+```
+# API Gaetway
+```
+// API Gateway 
+new apigw.LambdaRestApi(this, 'Endpoint', {
+  handler: name
+});
 ```
 
 # Sample App:
