@@ -12,11 +12,11 @@
 This is an example project showing:
 - CDK
 - Typescript
-- Using an exisitng layer in a CDK project
+- Deploying a new layer in a CDK project
 
 I have been followign Dino for a little while, it's nice to use stong typing in javascript however the transpilers are a slgiht overhead, Dino does away with this and allows the use of typescript with out compilation.
 
-The CDK stack project is still usign typescript that is compiled howvere you cna see in ```tsconfig.json``` that ./src is excluded meanign we dont need to compile this.
+The CDK stack project is still usign typescript that is compiled however you can see in ```tsconfig.json``` that /srcprogram is excluded meanign we dont need to compile this.
 
 The stack consist of:
 - Lambda layer the enables Deno runtime
@@ -95,7 +95,6 @@ const constructResponse = (event: APIGatewayProxyEvent) => {
   return r;
 }
 ```
-This program is excluded from compilation in ```tsconfig.json`` found in the root.
 
 When you are ready to deploy run ```cdk bootstrap``` then ```cdk deploy```
 
