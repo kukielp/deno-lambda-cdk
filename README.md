@@ -149,7 +149,7 @@ curl https://your-url/prod/Your-Name-Here | jq
 
 ```
 
-![Deno](https://cdn.kukiel.dev/deno.gif "denodeploy")
+![Deno](https://cdn.kukiel.dev/deno.gif)
 
 The `cdk.json` file tells the CDK Toolkit how to execute your app.
 
