@@ -23,6 +23,13 @@ The stack consist of:
 - A lambda function
 - An API gateway
 
+To satrt off run:
+```
+npm run watch
+
+```
+This will start monitoring the CDK stack typscript files and compile them to java script.  Keep an eye on the terminal as it will complile the stack code as you make changes and save.
+
 How do we define a layer in CDK?  I decide not to build the runetime in this example but show how to deploy a built runtime.  I took the latest release from: 
 [https://github.com/hayd/deno-lambda/releases](https://github.com/hayd/deno-lambda/releases
 ) and unzipped the contents into src/later
@@ -35,7 +42,7 @@ const layer = new lambda.LayerVersion(this, 'deno-layer', {
     description: 'A layer that enebales Deno to run in lambda',
 });
 ```
-
+# Lambda function:
 We can see that AWS provide the 'lambda.Runtime.PROVIDED' value for use when we are leveraging a custom runtime.
 The code will come from src/program folder, in this case a single file called name.ts this file directly is deployed as a typescript file.  When we create the function we pass in the layer defined above.  The handler is the name of the file ( eg name )
 
@@ -48,6 +55,7 @@ const name = new lambda.Function(this, 'NameHandler', {
     })
 ```
 
+# Sample App:
 The sample program is very simple, usign the good old "Person" example we createa  person, it shows private vairables, and the use of a getter.
 
 ```
@@ -95,7 +103,7 @@ const constructResponse = (event: APIGatewayProxyEvent) => {
   return r;
 }
 ```
-
+# Deploy
 When you are ready to deploy run ```cdk bootstrap``` then ```cdk deploy```
 
 Outputs will look like:
@@ -106,6 +114,7 @@ Outputs:
 CdkOneStack.Endpoint8024A810 = https://your-url/prod/
 ```
 
+# Call your function!
 You can call this by issuing the command:
 ```
 curl https://your-url/prod/0Your-Name-Here0 | jq
@@ -120,8 +129,6 @@ curl https://your-url/prod/0Your-Name-Here0 | jq
 }
 
 ```
-
-
 
 The `cdk.json` file tells the CDK Toolkit how to execute your app.
 
