@@ -23,8 +23,9 @@ The stack consist of:
 - A lambda function
 - An API gateway
 
-To satrt off run:
+To start off clone the repo cand cd into the folder then run:
 ```
+npm install
 npm run watch
 
 ```
