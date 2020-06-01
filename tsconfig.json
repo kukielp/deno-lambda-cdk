@@ -21,6 +21,7 @@
   },
   "exclude": [
       "cdk.out",
-      "src"
+      "src",
+      "layer"
     ]
 }

@@ -6,18 +6,19 @@ export class CdkOneStack extends cdk.Stack {
   constructor(scope: cdk.App, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 
-    const layer = [ lambda.LayerVersion.fromLayerVersionArn(this, 'Layer',
-      // You will need a Dino Layer
-      // `<Your Dino Layer ARM Here>`
-      `arn:aws:lambda:ap-southeast-2::layer:deno:1`  
-      )
-    ]
+    //Create the Deno layer
+    const layer = new lambda.LayerVersion(this, 'deno-layer', {
+      code: lambda.Code.fromAsset('src/layer'),
+      compatibleRuntimes: [lambda.Runtime.PROVIDED],
+      license: 'Apache-2.0',
+      description: 'A layer that enebales Deno to run in lambda',
+    });
 
     const name = new lambda.Function(this, 'NameHandler', {
       runtime: lambda.Runtime.PROVIDED,
-      code: lambda.Code.fromAsset('src'),
+      code: lambda.Code.fromAsset('src/program'),
       handler: 'name.handler',
-      layers: layer,
+      layers: [layer],
     })
 
     // API Gateway 
