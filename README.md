@@ -10,11 +10,11 @@
 # Overview
 
 This is an example project showing:
-- CDK
-- Typescript
+- AWS CDK
+- TypeScript
 - Deploying a new layer in a CDK project
 
-I have been followign Dino for a little while, it's nice to use stong typing in javascript however the transpilers are a slgiht overhead, Dino does away with this and allows the use of typescript with out compilation.
+I have been followign Deno for a little while, it's nice to use stong typing in javascript however the transpilers are a slight overhead, Deno does away with this and allows the use of TypeScript with out compilation.
 
 The CDK stack project is still usign typescript that is compiled however you can see in ```tsconfig.json``` that /srcprogram is excluded meanign we dont need to compile this.
 
@@ -28,23 +28,23 @@ To satrt off run:
 npm run watch
 
 ```
-This will start monitoring the CDK stack typscript files and compile them to java script.  Keep an eye on the terminal as it will complile the stack code as you make changes and save.
+This will start monitoring the CDK stack TypCcript files and compile them to vanilla javascript.  Keep an eye on the terminal as it will complile the stack code as you make changes and save.
 
 How do we define a layer in CDK?  I decide not to build the runetime in this example but show how to deploy a built runtime.  I took the latest release from: 
 [https://github.com/hayd/deno-lambda/releases](https://github.com/hayd/deno-lambda/releases
-) and unzipped the contents into src/later
+) and unzipped the contents into src/layer folder.  In CDK we define a new layer:
 
 ```
 const layer = new lambda.LayerVersion(this, 'deno-layer', {
     code: lambda.Code.fromAsset('src/layer'),
     compatibleRuntimes: [lambda.Runtime.PROVIDED],
     license: 'Apache-2.0',
-    description: 'A layer that enebales Deno to run in lambda',
+    description: 'A layer that enables Deno to run in AWS Lambda',
 });
 ```
 # Lambda function:
 We can see that AWS provide the 'lambda.Runtime.PROVIDED' value for use when we are leveraging a custom runtime.
-The code will come from src/program folder, in this case a single file called name.ts this file directly is deployed as a typescript file.  When we create the function we pass in the layer defined above.  The handler is the name of the file ( eg name )
+The code will come from src/program folder, in this case a single file called "name.ts" this file directly is deployed as a typescript file.  When we create the function we pass in the layer defined above ( that value will be the ARB opf the layer ).  The handler is the name of the file ( eg name )
 
 ```
 const name = new lambda.Function(this, 'NameHandler', {
@@ -56,7 +56,7 @@ const name = new lambda.Function(this, 'NameHandler', {
 ```
 
 # Sample App:
-The sample program is very simple, usign the good old "Person" example we createa  person, it shows private vairables, and the use of a getter.
+The sample program is very simple, usign the good old Obejct Oriented "Person" example we create a  person, it shows private variables, and the use of a getter and a constructor.
 
 ```
 import {
@@ -97,8 +97,8 @@ class Result {
 
 const constructResponse = (event: APIGatewayProxyEvent) => {
   let name = event.path.replace("/","");
-  let s = new Person(name);
-  let r = new Result(s, `Hi ${s.fullName}, Welcome to deno ${Deno.version.deno} 🦕`);
+  let p = new Person(name);
+  let r = new Result(p, `Hi ${p.fullName}, Welcome to deno ${Deno.version.deno} 🦕`);
 
   return r;
 }
@@ -114,17 +114,26 @@ Outputs:
 CdkOneStack.Endpoint8024A810 = https://your-url/prod/
 ```
 
+CdkOneStack is defined in:```/bin/cdk-one.ts``` you can change the name of the stack if you desire:
+```#!/usr/bin/env node
+import * as cdk from '@aws-cdk/core';
+import { CdkOneStack } from '../lib/cdk-one-stack';
+
+const app = new cdk.App();
+new CdkOneStack(app, 'CdkOneStack');  // <- Stack name>
+```
+
 # Call your function!
 You can call this by issuing the command:
 ```
-curl https://your-url/prod/0Your-Name-Here0 | jq
+curl https://your-url/prod/Your-Name-Here | jq
 ```
 
 ```
 {
-  "message": "Hi 0Your-Name-Here0!, Welcome to deno 1.0.2 🦕",
+  "message": "Hi Your-Name-Here!, Welcome to deno 1.0.2 🦕",
   "user": {
-    "_fullName": "0Your-Name-Here0"
+    "_fullName": "Your-Name-Here"
   }
 }
 
