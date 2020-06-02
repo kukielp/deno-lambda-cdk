@@ -149,7 +149,9 @@ curl https://your-url/prod/Your-Name-Here | jq
 
 ```
 
-<img src="https://cdn.kukiel.dev/deno.gif" />
+# Video
+[![IMAGE ALT TEXT HERE](0.jpg)](https://www.youtube.com/watch?v=qgxB8CYYqxE)
+
 
 The `cdk.json` file tells the CDK Toolkit how to execute your app.
 
